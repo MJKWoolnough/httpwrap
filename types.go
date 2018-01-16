@@ -1,6 +1,7 @@
 // File automatically generated with ./types.sh - DO NOT EDIT
 
-// Package httpwrap ...
+// Package httpwrap wraps an http.ResponseWriter to override some method(s)
+// while maintaining other possible interface implementations
 package httpwrap
 
 import (
@@ -34,7 +35,7 @@ type types struct {
 	http.Pusher
 }
 
-// Wrap ...
+// Wrap wraps the given ResponseWriter and overrides the methods requested.
 func Wrap(w http.ResponseWriter, overrides ...override) http.ResponseWriter {
 	var t types
 	t.Writer = w
