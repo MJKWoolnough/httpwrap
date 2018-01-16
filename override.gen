@@ -1,5 +1,5 @@
 +io.Writer
-+Header
++Headers
 +HeaderWriter
 http.CloseNotifier
 http.Flusher
