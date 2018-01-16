@@ -1,0 +1,7 @@
++io.Writer
++Header
++HeaderWriter
+http.CloseNotifier
+http.Flusher
+http.Hijacker
+http.Pusher
