@@ -48,6 +48,9 @@ func Wrap(w http.ResponseWriter, overrides ...override) http.ResponseWriter {
 	for _, o := range overrides {
 		o.Set(&t)
 	}
+	if t.responseWriterOverride {
+		w = t.responseWriter
+	}
 	var bf uint64
 	if t.CloseNotifier != nil {
 		bf |= 1

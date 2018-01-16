@@ -88,6 +88,9 @@ HEREDOC
 	echo "	for _, o := range overrides {";
 	echo "		o.Set(&t)";
 	echo "	}";
+	echo "	if t.responseWriterOverride {";
+	echo "		w = t.responseWriter";
+	echo "	}";
 	echo "	var bf uint64";
 	i=1;
 	for type in ${types[@]};do 
