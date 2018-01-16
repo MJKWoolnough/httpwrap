@@ -36,8 +36,8 @@
 		echo "	t.$name = i.$name";
 		echo "}";
 		echo;
-		echo "// $name is used to set an override for $type";
-		echo "func $name(t $type) override {";
+		echo "// Override$name is used to set an override for $type";
+		echo "func Override$name(t $type) override {";
 		echo "	return $typename{t}";
 		echo "}";
 	done < override.gen;
