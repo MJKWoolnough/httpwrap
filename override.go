@@ -20,23 +20,23 @@ func (i writer) Set(t *types) {
 	t.Writer = i.Writer
 }
 
-// Writer is used to set an override for io.Writer
-func Writer(t io.Writer) override {
+// OverrideWriter is used to set an override for io.Writer
+func OverrideWriter(t io.Writer) override {
 	return writer{t}
 }
 
-type header struct {
-	Header
+type headers struct {
+	Headers
 }
 
-func (i header) Set(t *types) {
+func (i headers) Set(t *types) {
 	t.responseWriterOverride = true
-	t.Header = i.Header
+	t.Headers = i.Headers
 }
 
-// Header is used to set an override for Header
-func Header(t Header) override {
-	return header{t}
+// OverrideHeaders is used to set an override for Headers
+func OverrideHeaders(t Headers) override {
+	return headers{t}
 }
 
 type headerwriter struct {
@@ -48,8 +48,8 @@ func (i headerwriter) Set(t *types) {
 	t.HeaderWriter = i.HeaderWriter
 }
 
-// HeaderWriter is used to set an override for HeaderWriter
-func HeaderWriter(t HeaderWriter) override {
+// OverrideHeaderWriter is used to set an override for HeaderWriter
+func OverrideHeaderWriter(t HeaderWriter) override {
 	return headerwriter{t}
 }
 
@@ -61,8 +61,8 @@ func (i closenotifier) Set(t *types) {
 	t.CloseNotifier = i.CloseNotifier
 }
 
-// CloseNotifier is used to set an override for http.CloseNotifier
-func CloseNotifier(t http.CloseNotifier) override {
+// OverrideCloseNotifier is used to set an override for http.CloseNotifier
+func OverrideCloseNotifier(t http.CloseNotifier) override {
 	return closenotifier{t}
 }
 
@@ -74,8 +74,8 @@ func (i flusher) Set(t *types) {
 	t.Flusher = i.Flusher
 }
 
-// Flusher is used to set an override for http.Flusher
-func Flusher(t http.Flusher) override {
+// OverrideFlusher is used to set an override for http.Flusher
+func OverrideFlusher(t http.Flusher) override {
 	return flusher{t}
 }
 
@@ -87,8 +87,8 @@ func (i hijacker) Set(t *types) {
 	t.Hijacker = i.Hijacker
 }
 
-// Hijacker is used to set an override for http.Hijacker
-func Hijacker(t http.Hijacker) override {
+// OverrideHijacker is used to set an override for http.Hijacker
+func OverrideHijacker(t http.Hijacker) override {
 	return hijacker{t}
 }
 
@@ -100,7 +100,7 @@ func (i pusher) Set(t *types) {
 	t.Pusher = i.Pusher
 }
 
-// Pusher is used to set an override for http.Pusher
-func Pusher(t http.Pusher) override {
+// OverridePusher is used to set an override for http.Pusher
+func OverridePusher(t http.Pusher) override {
 	return pusher{t}
 }
