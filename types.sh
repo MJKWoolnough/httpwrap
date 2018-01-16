@@ -4,10 +4,35 @@
 	cat <<HEREDOC
 // File automatically generated with ./types.sh - DO NOT EDIT
 
+// Package httpwrap wraps an http.ResponseWriter to override some method(s)
+// while maintaining other possible interface implementations
 package httpwrap
 
-import "net/http"
+import (
+	"io"
+	"net/http"
+)
 
+// Headers is an interface for the Header method of the ResponseWriter interface
+type Headers interface {
+	Header() http.Header
+}
+
+// HeaderWriter is an interface for the WriteHeader method of the ResponseWriter
+// interface
+type HeaderWriter interface {
+	WriteHeader(int)
+}
+
+type responseWriter struct {
+	io.Writer
+	Headers
+	HeaderWriter
+}
+
+type types struct {
+	responseWriterOverride bool
+	responseWriter
 HEREDOC
 
 	types=();
@@ -15,8 +40,10 @@ HEREDOC
 		if [ "${type:0:1}" == "+" ]; then
 			continue;
 		fi;
+		echo "	$type";
 		types+=($type);
 	done < override.gen
+	echo "}";
 
 	function bfToTypes {
 		toRet=()
@@ -47,8 +74,20 @@ HEREDOC
 		fi;
 	}
 
-
-	echo "func wrap(w http.ResponseWriter, t types) http.ResponseWriter {";
+	echo;
+	echo "// Wrap wraps the given ResponseWriter and overrides the methods requested."
+	echo "func Wrap(w http.ResponseWriter, overrides ...override) http.ResponseWriter {";
+	echo "	var t types";
+	while read type;do
+		if [ "${type:0:1}" == "+" ]; then
+			echo "	t.$(typeToName "${type:1}") = w";
+			continue;
+		fi;
+		echo "	t.$(typeToName "$type"), _ = w.($type)";
+	done < override.gen
+	echo "	for _, o := range overrides {";
+	echo "		o.Set(&t)";
+	echo "	}";
 	echo "	var bf uint64";
 	i=1;
 	for type in ${types[@]};do 
