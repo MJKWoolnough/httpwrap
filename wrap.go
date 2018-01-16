@@ -1,4 +1,4 @@
-// File automatically generated with ./types.sh - DO NOT EDIT
+// File automatically generated with ./wrap.sh - DO NOT EDIT
 
 // Package httpwrap wraps an http.ResponseWriter to override some method(s)
 // while maintaining other possible interface implementations
