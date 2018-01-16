@@ -1,10 +1,52 @@
 // File automatically generated with ./types.sh - DO NOT EDIT
 
+// Package httpwrap ...
 package httpwrap
 
-import "net/http"
+import (
+	"io"
+	"net/http"
+)
 
-func wrap(w http.ResponseWriter, t types) http.ResponseWriter {
+// Headers is an interface for the Header method of the ResponseWriter interface
+type Headers interface {
+	Header() http.Header
+}
+
+// HeaderWriter is an interface for the WriteHeader method of the ResponseWriter
+// interface
+type HeaderWriter interface {
+	WriteHeader(int)
+}
+
+type responseWriter struct {
+	io.Writer
+	Headers
+	HeaderWriter
+}
+
+type types struct {
+	responseWriterOverride bool
+	responseWriter
+	http.CloseNotifier
+	http.Flusher
+	http.Hijacker
+	http.Pusher
+}
+
+// Wrap ...
+func Wrap(w http.ResponseWriter, overrides ...override) http.ResponseWriter {
+	var t types
+	t.Writer = w
+	t.Headers = w
+	t.HeaderWriter = w
+	t.CloseNotifier, _ = w.(http.CloseNotifier)
+	t.Flusher, _ = w.(http.Flusher)
+	t.Hijacker, _ = w.(http.Hijacker)
+	t.Pusher, _ = w.(http.Pusher)
+	for _, o := range overrides {
+		o.Set(&t)
+	}
 	var bf uint64
 	if t.CloseNotifier != nil {
 		bf |= 1
