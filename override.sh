@@ -40,5 +40,5 @@
 		echo "func Override$name(t $type) override {";
 		echo "	return $typename{t}";
 		echo "}";
-	done < override.gen;
+	done < types.gen;
 ) > override.go

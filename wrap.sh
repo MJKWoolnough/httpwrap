@@ -42,7 +42,7 @@ HEREDOC
 		fi;
 		echo "	$type";
 		types+=($type);
-	done < override.gen
+	done < types.gen
 	echo "}";
 
 	function bfToTypes {
@@ -84,7 +84,7 @@ HEREDOC
 			continue;
 		fi;
 		echo "	t.$(typeToName "$type"), _ = w.($type)";
-	done < override.gen
+	done < types.gen
 	echo "	for _, o := range overrides {";
 	echo "		o.Set(&t)";
 	echo "	}";
@@ -119,4 +119,4 @@ HEREDOC
 		echo "}";
 	done;
 
-) > types.go
+) > wrap.go
