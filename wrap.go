@@ -37,6 +37,9 @@ type types struct {
 
 // Wrap wraps the given ResponseWriter and overrides the methods requested.
 func Wrap(w http.ResponseWriter, overrides ...override) http.ResponseWriter {
+	if len(overrides) == 0 {
+		return w
+	}
 	var t types
 	t.Writer = w
 	t.Headers = w
@@ -47,9 +50,6 @@ func Wrap(w http.ResponseWriter, overrides ...override) http.ResponseWriter {
 	t.Pusher, _ = w.(http.Pusher)
 	for _, o := range overrides {
 		o.Set(&t)
-	}
-	if t.responseWriterOverride {
-		w = t.responseWriter
 	}
 	var bf uint64
 	if t.CloseNotifier != nil {
@@ -63,6 +63,9 @@ func Wrap(w http.ResponseWriter, overrides ...override) http.ResponseWriter {
 	}
 	if t.Pusher != nil {
 		bf |= 8
+	}
+	if t.responseWriterOverride || bf == 0 {
+		w = t.responseWriter
 	}
 	switch bf {
 	case 1:

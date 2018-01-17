@@ -77,6 +77,9 @@ HEREDOC
 	echo;
 	echo "// Wrap wraps the given ResponseWriter and overrides the methods requested."
 	echo "func Wrap(w http.ResponseWriter, overrides ...override) http.ResponseWriter {";
+	echo "	if len(overrides) == 0 {";
+	echo "		return w";
+	echo "	}";
 	echo "	var t types";
 	while read type;do
 		if [ "${type:0:1}" == "+" ]; then
@@ -88,9 +91,6 @@ HEREDOC
 	echo "	for _, o := range overrides {";
 	echo "		o.Set(&t)";
 	echo "	}";
-	echo "	if t.responseWriterOverride {";
-	echo "		w = t.responseWriter";
-	echo "	}";
 	echo "	var bf uint64";
 	i=1;
 	for type in ${types[@]};do 
@@ -99,6 +99,9 @@ HEREDOC
 		echo "	}";
 		let "i += i";
 	done;
+	echo "	if t.responseWriterOverride || bf == 0 {";
+	echo "		w = t.responseWriter";
+	echo "	}";
 	echo "	switch bf {";
 	for i in $(seq 1 $(echo $(( (1 << 4) - 1)))); do
 		echo "	case $i:";
