@@ -7,7 +7,8 @@ import (
 	"net/http"
 )
 
-type override interface {
+// Override is an interface for overriding interfaces on a http.ResponseWriter
+type Override interface {
 	Set(*types)
 }
 
@@ -21,7 +22,7 @@ func (i writer) Set(t *types) {
 }
 
 // OverrideWriter is used to set an override for io.Writer
-func OverrideWriter(t io.Writer) override {
+func OverrideWriter(t io.Writer) Override {
 	return writer{t}
 }
 
@@ -35,7 +36,7 @@ func (i headers) Set(t *types) {
 }
 
 // OverrideHeaders is used to set an override for Headers
-func OverrideHeaders(t Headers) override {
+func OverrideHeaders(t Headers) Override {
 	return headers{t}
 }
 
@@ -49,7 +50,7 @@ func (i headerwriter) Set(t *types) {
 }
 
 // OverrideHeaderWriter is used to set an override for HeaderWriter
-func OverrideHeaderWriter(t HeaderWriter) override {
+func OverrideHeaderWriter(t HeaderWriter) Override {
 	return headerwriter{t}
 }
 
@@ -62,7 +63,7 @@ func (i closenotifier) Set(t *types) {
 }
 
 // OverrideCloseNotifier is used to set an override for http.CloseNotifier
-func OverrideCloseNotifier(t http.CloseNotifier) override {
+func OverrideCloseNotifier(t http.CloseNotifier) Override {
 	return closenotifier{t}
 }
 
@@ -75,7 +76,7 @@ func (i flusher) Set(t *types) {
 }
 
 // OverrideFlusher is used to set an override for http.Flusher
-func OverrideFlusher(t http.Flusher) override {
+func OverrideFlusher(t http.Flusher) Override {
 	return flusher{t}
 }
 
@@ -88,7 +89,7 @@ func (i hijacker) Set(t *types) {
 }
 
 // OverrideHijacker is used to set an override for http.Hijacker
-func OverrideHijacker(t http.Hijacker) override {
+func OverrideHijacker(t http.Hijacker) Override {
 	return hijacker{t}
 }
 
@@ -101,6 +102,6 @@ func (i pusher) Set(t *types) {
 }
 
 // OverridePusher is used to set an override for http.Pusher
-func OverridePusher(t http.Pusher) override {
+func OverridePusher(t http.Pusher) Override {
 	return pusher{t}
 }

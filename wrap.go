@@ -36,7 +36,7 @@ type types struct {
 }
 
 // Wrap wraps the given ResponseWriter and overrides the methods requested.
-func Wrap(w http.ResponseWriter, overrides ...override) http.ResponseWriter {
+func Wrap(w http.ResponseWriter, overrides ...Override) http.ResponseWriter {
 	if len(overrides) == 0 {
 		return w
 	}
