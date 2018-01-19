@@ -76,7 +76,7 @@ HEREDOC
 
 	echo;
 	echo "// Wrap wraps the given ResponseWriter and overrides the methods requested."
-	echo "func Wrap(w http.ResponseWriter, overrides ...override) http.ResponseWriter {";
+	echo "func Wrap(w http.ResponseWriter, overrides ...Override) http.ResponseWriter {";
 	echo "	if len(overrides) == 0 {";
 	echo "		return w";
 	echo "	}";

@@ -10,7 +10,8 @@
 	echo "	\"net/http\"";
 	echo ")";
 	echo;
-	echo "type override interface {";
+	echo "// Override is an interface for overriding interfaces on a http.ResponseWriter";
+	echo "type Override interface {";
 	echo "	Set(*types)";
 	echo "}";
 	while read type; do
@@ -37,7 +38,7 @@
 		echo "}";
 		echo;
 		echo "// Override$name is used to set an override for $type";
-		echo "func Override$name(t $type) override {";
+		echo "func Override$name(t $type) Override {";
 		echo "	return $typename{t}";
 		echo "}";
 	done < types.gen;
