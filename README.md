@@ -7,59 +7,10 @@ maintaining other possible interface implementations
 
 ## Usage
 
-#### func  OverrideCloseNotifier
-
-```go
-func OverrideCloseNotifier(t http.CloseNotifier) override
-```
-OverrideCloseNotifier is used to set an override for http.CloseNotifier
-
-#### func  OverrideFlusher
-
-```go
-func OverrideFlusher(t http.Flusher) override
-```
-OverrideFlusher is used to set an override for http.Flusher
-
-#### func  OverrideHeaderWriter
-
-```go
-func OverrideHeaderWriter(t HeaderWriter) override
-```
-OverrideHeaderWriter is used to set an override for HeaderWriter
-
-#### func  OverrideHeaders
-
-```go
-func OverrideHeaders(t Headers) override
-```
-OverrideHeaders is used to set an override for Headers
-
-#### func  OverrideHijacker
-
-```go
-func OverrideHijacker(t http.Hijacker) override
-```
-OverrideHijacker is used to set an override for http.Hijacker
-
-#### func  OverridePusher
-
-```go
-func OverridePusher(t http.Pusher) override
-```
-OverridePusher is used to set an override for http.Pusher
-
-#### func  OverrideWriter
-
-```go
-func OverrideWriter(t io.Writer) override
-```
-OverrideWriter is used to set an override for io.Writer
-
 #### func  Wrap
 
 ```go
-func Wrap(w http.ResponseWriter, overrides ...override) http.ResponseWriter
+func Wrap(w http.ResponseWriter, overrides ...Override) http.ResponseWriter
 ```
 Wrap wraps the given ResponseWriter and overrides the methods requested.
 
@@ -83,3 +34,62 @@ type Headers interface {
 ```
 
 Headers is an interface for the Header method of the ResponseWriter interface
+
+#### type Override
+
+```go
+type Override interface {
+	Set(*types)
+}
+```
+
+Override is an interface for overriding interfaces on a http.ResponseWriter
+
+#### func  OverrideCloseNotifier
+
+```go
+func OverrideCloseNotifier(t http.CloseNotifier) Override
+```
+OverrideCloseNotifier is used to set an override for http.CloseNotifier
+
+#### func  OverrideFlusher
+
+```go
+func OverrideFlusher(t http.Flusher) Override
+```
+OverrideFlusher is used to set an override for http.Flusher
+
+#### func  OverrideHeaderWriter
+
+```go
+func OverrideHeaderWriter(t HeaderWriter) Override
+```
+OverrideHeaderWriter is used to set an override for HeaderWriter
+
+#### func  OverrideHeaders
+
+```go
+func OverrideHeaders(t Headers) Override
+```
+OverrideHeaders is used to set an override for Headers
+
+#### func  OverrideHijacker
+
+```go
+func OverrideHijacker(t http.Hijacker) Override
+```
+OverrideHijacker is used to set an override for http.Hijacker
+
+#### func  OverridePusher
+
+```go
+func OverridePusher(t http.Pusher) Override
+```
+OverridePusher is used to set an override for http.Pusher
+
+#### func  OverrideWriter
+
+```go
+func OverrideWriter(t io.Writer) Override
+```
+OverrideWriter is used to set an override for io.Writer
