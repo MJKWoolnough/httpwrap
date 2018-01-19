@@ -13,71 +13,71 @@ type testResponseWriter struct {
 func TestWrap(t *testing.T) {
 	for n, test := range [...]struct {
 		Input, Output http.ResponseWriter
-		Overrides     []override
+		Overrides     []Override
 	}{
 		{
 			responseWriterCloseNotifierFlusherHijackerPusher{},
 			responseWriterCloseNotifierFlusherHijackerPusher{},
-			[]override{},
+			[]Override{},
 		},
 		{
 			responseWriterCloseNotifierFlusherHijackerPusher{},
 			responseWriterFlusherHijackerPusher{},
-			[]override{
+			[]Override{
 				OverrideCloseNotifier(nil),
 			},
 		},
 		{
 			responseWriterCloseNotifierFlusherHijackerPusher{},
 			responseWriterCloseNotifierHijackerPusher{},
-			[]override{
+			[]Override{
 				OverrideFlusher(nil),
 			},
 		},
 		{
 			responseWriterCloseNotifierFlusherHijackerPusher{},
 			responseWriterCloseNotifierFlusherPusher{},
-			[]override{
+			[]Override{
 				OverrideHijacker(nil),
 			},
 		},
 		{
 			responseWriterCloseNotifierFlusherHijackerPusher{},
 			responseWriterCloseNotifierFlusherHijacker{},
-			[]override{
+			[]Override{
 				OverridePusher(nil),
 			},
 		},
 		{
 			testResponseWriter{},
 			testResponseWriter{},
-			[]override{},
+			[]Override{},
 		},
 		{
 			testResponseWriter{},
 			responseWriterCloseNotifier{},
-			[]override{
+			[]Override{
 				OverrideCloseNotifier(responseWriterCloseNotifierFlusherHijackerPusher{}),
 			},
 		},
 		{
 			testResponseWriter{},
 			responseWriterFlusher{},
-			[]override{
+			[]Override{
 				OverrideFlusher(responseWriterCloseNotifierFlusherHijackerPusher{}),
 			},
 		},
 		{
 			testResponseWriter{},
 			responseWriterHijacker{},
-			[]override{
+			[]Override{
 				OverrideHijacker(responseWriterCloseNotifierFlusherHijackerPusher{}),
 			},
 		},
 		{
 			testResponseWriter{},
 			responseWriterPusher{},
-			[]override{
+			[]Override{
 				OverridePusher(responseWriterCloseNotifierFlusherHijackerPusher{}),
 			},
 		},
