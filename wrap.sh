@@ -36,12 +36,14 @@ type types struct {
 HEREDOC
 
 	types=();
+	numTypes=0;
 	while read type;do 
 		if [ "${type:0:1}" == "+" ]; then
 			continue;
 		fi;
 		echo "	$type";
 		types+=($type);
+		let "numTypes++";
 	done < types.gen
 	echo "}";
 
@@ -103,7 +105,7 @@ HEREDOC
 	echo "		w = t.responseWriter";
 	echo "	}";
 	echo "	switch bf {";
-	for i in $(seq 1 $(echo $(( (1 << 4) - 1)))); do
+	for i in $(seq 1 $(echo $(( (1 << ${numTypes}) - 1)))); do
 		echo "	case $i:";
 		echo "		return $(bfToTypeName $i){";
 		echo "			w,";
@@ -115,7 +117,7 @@ HEREDOC
 	echo "	}";
 	echo "	return w";
 	echo "}";
-	for i in $(seq 1 $(echo $(( (1 << 4) - 1)))); do
+	for i in $(seq 1 $(echo $(( (1 << ${numTypes}) - 1)))); do
 		echo;
 		echo "type $(bfToTypeName $i) struct {";
 		echo "	http.ResponseWriter";
