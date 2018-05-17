@@ -87,9 +87,26 @@ func OverridePusher(t http.Pusher) Override
 ```
 OverridePusher is used to set an override for http.Pusher
 
+#### func  OverrideStringWriter
+
+```go
+func OverrideStringWriter(t StringWriter) Override
+```
+OverrideStringWriter is used to set an override for StringWriter
+
 #### func  OverrideWriter
 
 ```go
 func OverrideWriter(t io.Writer) Override
 ```
 OverrideWriter is used to set an override for io.Writer
+
+#### type StringWriter
+
+```go
+type StringWriter interface {
+	WriteString(string) (int, error)
+}
+```
+
+StringWriter is an interface for writing strings
