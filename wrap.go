@@ -33,6 +33,7 @@ type types struct {
 	http.Flusher
 	http.Hijacker
 	http.Pusher
+	StringWriter
 }
 
 // Wrap wraps the given ResponseWriter and overrides the methods requested.
@@ -48,6 +49,7 @@ func Wrap(w http.ResponseWriter, overrides ...Override) http.ResponseWriter {
 	t.Flusher, _ = w.(http.Flusher)
 	t.Hijacker, _ = w.(http.Hijacker)
 	t.Pusher, _ = w.(http.Pusher)
+	t.StringWriter, _ = w.(StringWriter)
 	for _, o := range overrides {
 		o.Set(&t)
 	}
@@ -63,6 +65,9 @@ func Wrap(w http.ResponseWriter, overrides ...Override) http.ResponseWriter {
 	}
 	if t.Pusher != nil {
 		bf |= 8
+	}
+	if t.StringWriter != nil {
+		bf |= 16
 	}
 	if t.responseWriterOverride || bf == 0 {
 		w = t.responseWriter
@@ -160,6 +165,118 @@ func Wrap(w http.ResponseWriter, overrides ...Override) http.ResponseWriter {
 			t.Hijacker,
 			t.Pusher,
 		}
+	case 16:
+		return responseWriterStringWriter{
+			w,
+			t.StringWriter,
+		}
+	case 17:
+		return responseWriterCloseNotifierStringWriter{
+			w,
+			t.CloseNotifier,
+			t.StringWriter,
+		}
+	case 18:
+		return responseWriterFlusherStringWriter{
+			w,
+			t.Flusher,
+			t.StringWriter,
+		}
+	case 19:
+		return responseWriterCloseNotifierFlusherStringWriter{
+			w,
+			t.CloseNotifier,
+			t.Flusher,
+			t.StringWriter,
+		}
+	case 20:
+		return responseWriterHijackerStringWriter{
+			w,
+			t.Hijacker,
+			t.StringWriter,
+		}
+	case 21:
+		return responseWriterCloseNotifierHijackerStringWriter{
+			w,
+			t.CloseNotifier,
+			t.Hijacker,
+			t.StringWriter,
+		}
+	case 22:
+		return responseWriterFlusherHijackerStringWriter{
+			w,
+			t.Flusher,
+			t.Hijacker,
+			t.StringWriter,
+		}
+	case 23:
+		return responseWriterCloseNotifierFlusherHijackerStringWriter{
+			w,
+			t.CloseNotifier,
+			t.Flusher,
+			t.Hijacker,
+			t.StringWriter,
+		}
+	case 24:
+		return responseWriterPusherStringWriter{
+			w,
+			t.Pusher,
+			t.StringWriter,
+		}
+	case 25:
+		return responseWriterCloseNotifierPusherStringWriter{
+			w,
+			t.CloseNotifier,
+			t.Pusher,
+			t.StringWriter,
+		}
+	case 26:
+		return responseWriterFlusherPusherStringWriter{
+			w,
+			t.Flusher,
+			t.Pusher,
+			t.StringWriter,
+		}
+	case 27:
+		return responseWriterCloseNotifierFlusherPusherStringWriter{
+			w,
+			t.CloseNotifier,
+			t.Flusher,
+			t.Pusher,
+			t.StringWriter,
+		}
+	case 28:
+		return responseWriterHijackerPusherStringWriter{
+			w,
+			t.Hijacker,
+			t.Pusher,
+			t.StringWriter,
+		}
+	case 29:
+		return responseWriterCloseNotifierHijackerPusherStringWriter{
+			w,
+			t.CloseNotifier,
+			t.Hijacker,
+			t.Pusher,
+			t.StringWriter,
+		}
+	case 30:
+		return responseWriterFlusherHijackerPusherStringWriter{
+			w,
+			t.Flusher,
+			t.Hijacker,
+			t.Pusher,
+			t.StringWriter,
+		}
+	case 31:
+		return responseWriterCloseNotifierFlusherHijackerPusherStringWriter{
+			w,
+			t.CloseNotifier,
+			t.Flusher,
+			t.Hijacker,
+			t.Pusher,
+			t.StringWriter,
+		}
 	}
 	return w
 }
@@ -254,4 +371,116 @@ type responseWriterCloseNotifierFlusherHijackerPusher struct {
 	http.Flusher
 	http.Hijacker
 	http.Pusher
+}
+
+type responseWriterStringWriter struct {
+	http.ResponseWriter
+	StringWriter
+}
+
+type responseWriterCloseNotifierStringWriter struct {
+	http.ResponseWriter
+	http.CloseNotifier
+	StringWriter
+}
+
+type responseWriterFlusherStringWriter struct {
+	http.ResponseWriter
+	http.Flusher
+	StringWriter
+}
+
+type responseWriterCloseNotifierFlusherStringWriter struct {
+	http.ResponseWriter
+	http.CloseNotifier
+	http.Flusher
+	StringWriter
+}
+
+type responseWriterHijackerStringWriter struct {
+	http.ResponseWriter
+	http.Hijacker
+	StringWriter
+}
+
+type responseWriterCloseNotifierHijackerStringWriter struct {
+	http.ResponseWriter
+	http.CloseNotifier
+	http.Hijacker
+	StringWriter
+}
+
+type responseWriterFlusherHijackerStringWriter struct {
+	http.ResponseWriter
+	http.Flusher
+	http.Hijacker
+	StringWriter
+}
+
+type responseWriterCloseNotifierFlusherHijackerStringWriter struct {
+	http.ResponseWriter
+	http.CloseNotifier
+	http.Flusher
+	http.Hijacker
+	StringWriter
+}
+
+type responseWriterPusherStringWriter struct {
+	http.ResponseWriter
+	http.Pusher
+	StringWriter
+}
+
+type responseWriterCloseNotifierPusherStringWriter struct {
+	http.ResponseWriter
+	http.CloseNotifier
+	http.Pusher
+	StringWriter
+}
+
+type responseWriterFlusherPusherStringWriter struct {
+	http.ResponseWriter
+	http.Flusher
+	http.Pusher
+	StringWriter
+}
+
+type responseWriterCloseNotifierFlusherPusherStringWriter struct {
+	http.ResponseWriter
+	http.CloseNotifier
+	http.Flusher
+	http.Pusher
+	StringWriter
+}
+
+type responseWriterHijackerPusherStringWriter struct {
+	http.ResponseWriter
+	http.Hijacker
+	http.Pusher
+	StringWriter
+}
+
+type responseWriterCloseNotifierHijackerPusherStringWriter struct {
+	http.ResponseWriter
+	http.CloseNotifier
+	http.Hijacker
+	http.Pusher
+	StringWriter
+}
+
+type responseWriterFlusherHijackerPusherStringWriter struct {
+	http.ResponseWriter
+	http.Flusher
+	http.Hijacker
+	http.Pusher
+	StringWriter
+}
+
+type responseWriterCloseNotifierFlusherHijackerPusherStringWriter struct {
+	http.ResponseWriter
+	http.CloseNotifier
+	http.Flusher
+	http.Hijacker
+	http.Pusher
+	StringWriter
 }
