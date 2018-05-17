@@ -14,6 +14,11 @@
 	echo "type Override interface {";
 	echo "	Set(*types)";
 	echo "}";
+	echo;
+	echo "// StringWriter is an interface for writing strings";
+	echo "type StringWriter interface {";
+	echo "	WriteString(string) (int, error)";
+	echo "}";
 	while read type; do
 		setOverride=false;
 		if [ "${type:0:1}" = "+" ]; then

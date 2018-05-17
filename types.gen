@@ -5,3 +5,4 @@ http.CloseNotifier
 http.Flusher
 http.Hijacker
 http.Pusher
+StringWriter
