@@ -10,39 +10,41 @@ type testResponseWriter struct {
 	http.ResponseWriter
 }
 
+type tresponseWriterCloseNotifierFlusherHijackerPusher responseWriterCloseNotifierFlusherHijackerPusher
+
 func TestWrap(t *testing.T) {
 	for n, test := range [...]struct {
 		Input, Output http.ResponseWriter
 		Overrides     []Override
 	}{
 		{
-			responseWriterCloseNotifierFlusherHijackerPusher{},
-			responseWriterCloseNotifierFlusherHijackerPusher{},
+			tresponseWriterCloseNotifierFlusherHijackerPusher{},
+			tresponseWriterCloseNotifierFlusherHijackerPusher{},
 			[]Override{},
 		},
 		{
-			responseWriterCloseNotifierFlusherHijackerPusher{},
+			tresponseWriterCloseNotifierFlusherHijackerPusher{},
 			responseWriterFlusherHijackerPusher{},
 			[]Override{
 				OverrideCloseNotifier(nil),
 			},
 		},
 		{
-			responseWriterCloseNotifierFlusherHijackerPusher{},
+			tresponseWriterCloseNotifierFlusherHijackerPusher{},
 			responseWriterCloseNotifierHijackerPusher{},
 			[]Override{
 				OverrideFlusher(nil),
 			},
 		},
 		{
-			responseWriterCloseNotifierFlusherHijackerPusher{},
+			tresponseWriterCloseNotifierFlusherHijackerPusher{},
 			responseWriterCloseNotifierFlusherPusher{},
 			[]Override{
 				OverrideHijacker(nil),
 			},
 		},
 		{
-			responseWriterCloseNotifierFlusherHijackerPusher{},
+			tresponseWriterCloseNotifierFlusherHijackerPusher{},
 			responseWriterCloseNotifierFlusherHijacker{},
 			[]Override{
 				OverridePusher(nil),
