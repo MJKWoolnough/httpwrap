@@ -12,7 +12,9 @@ maintaining other possible interface implementations
 ```go
 func Wrap(w http.ResponseWriter, overrides ...Override) http.ResponseWriter
 ```
-Wrap wraps the given ResponseWriter and overrides the methods requested.
+Wrap wraps the given ResponseWriter and overrides the methods requested. When
+using OverrideWriter make sure to use OverrideStringWriter, even if only with a
+nil value to disable it
 
 #### type HeaderWriter
 
