@@ -37,19 +37,170 @@ type types struct {
 }
 
 // Wrap wraps the given ResponseWriter and overrides the methods requested.
+// When using OverrideWriter make sure to use OverrideStringWriter, even if only
+// with a nil value to disable it
 func Wrap(w http.ResponseWriter, overrides ...Override) http.ResponseWriter {
 	if len(overrides) == 0 {
 		return w
 	}
 	var t types
-	t.Writer = w
-	t.Headers = w
-	t.HeaderWriter = w
-	t.CloseNotifier, _ = w.(http.CloseNotifier)
-	t.Flusher, _ = w.(http.Flusher)
-	t.Hijacker, _ = w.(http.Hijacker)
-	t.Pusher, _ = w.(http.Pusher)
-	t.StringWriter, _ = w.(StringWriter)
+	switch wt := w.(type) {
+	case responseWriterCloseNotifier:
+		w = wt.ResponseWriter
+		t.CloseNotifier = wt.CloseNotifier
+	case responseWriterFlusher:
+		w = wt.ResponseWriter
+		t.Flusher = wt.Flusher
+	case responseWriterCloseNotifierFlusher:
+		w = wt.ResponseWriter
+		t.CloseNotifier = wt.CloseNotifier
+		t.Flusher = wt.Flusher
+	case responseWriterHijacker:
+		w = wt.ResponseWriter
+		t.Hijacker = wt.Hijacker
+	case responseWriterCloseNotifierHijacker:
+		w = wt.ResponseWriter
+		t.CloseNotifier = wt.CloseNotifier
+		t.Hijacker = wt.Hijacker
+	case responseWriterFlusherHijacker:
+		w = wt.ResponseWriter
+		t.Flusher = wt.Flusher
+		t.Hijacker = wt.Hijacker
+	case responseWriterCloseNotifierFlusherHijacker:
+		w = wt.ResponseWriter
+		t.CloseNotifier = wt.CloseNotifier
+		t.Flusher = wt.Flusher
+		t.Hijacker = wt.Hijacker
+	case responseWriterPusher:
+		w = wt.ResponseWriter
+		t.Pusher = wt.Pusher
+	case responseWriterCloseNotifierPusher:
+		w = wt.ResponseWriter
+		t.CloseNotifier = wt.CloseNotifier
+		t.Pusher = wt.Pusher
+	case responseWriterFlusherPusher:
+		w = wt.ResponseWriter
+		t.Flusher = wt.Flusher
+		t.Pusher = wt.Pusher
+	case responseWriterCloseNotifierFlusherPusher:
+		w = wt.ResponseWriter
+		t.CloseNotifier = wt.CloseNotifier
+		t.Flusher = wt.Flusher
+		t.Pusher = wt.Pusher
+	case responseWriterHijackerPusher:
+		w = wt.ResponseWriter
+		t.Hijacker = wt.Hijacker
+		t.Pusher = wt.Pusher
+	case responseWriterCloseNotifierHijackerPusher:
+		w = wt.ResponseWriter
+		t.CloseNotifier = wt.CloseNotifier
+		t.Hijacker = wt.Hijacker
+		t.Pusher = wt.Pusher
+	case responseWriterFlusherHijackerPusher:
+		w = wt.ResponseWriter
+		t.Flusher = wt.Flusher
+		t.Hijacker = wt.Hijacker
+		t.Pusher = wt.Pusher
+	case responseWriterCloseNotifierFlusherHijackerPusher:
+		w = wt.ResponseWriter
+		t.CloseNotifier = wt.CloseNotifier
+		t.Flusher = wt.Flusher
+		t.Hijacker = wt.Hijacker
+		t.Pusher = wt.Pusher
+	case responseWriterStringWriter:
+		w = wt.ResponseWriter
+		t.StringWriter = wt.StringWriter
+	case responseWriterCloseNotifierStringWriter:
+		w = wt.ResponseWriter
+		t.CloseNotifier = wt.CloseNotifier
+		t.StringWriter = wt.StringWriter
+	case responseWriterFlusherStringWriter:
+		w = wt.ResponseWriter
+		t.Flusher = wt.Flusher
+		t.StringWriter = wt.StringWriter
+	case responseWriterCloseNotifierFlusherStringWriter:
+		w = wt.ResponseWriter
+		t.CloseNotifier = wt.CloseNotifier
+		t.Flusher = wt.Flusher
+		t.StringWriter = wt.StringWriter
+	case responseWriterHijackerStringWriter:
+		w = wt.ResponseWriter
+		t.Hijacker = wt.Hijacker
+		t.StringWriter = wt.StringWriter
+	case responseWriterCloseNotifierHijackerStringWriter:
+		w = wt.ResponseWriter
+		t.CloseNotifier = wt.CloseNotifier
+		t.Hijacker = wt.Hijacker
+		t.StringWriter = wt.StringWriter
+	case responseWriterFlusherHijackerStringWriter:
+		w = wt.ResponseWriter
+		t.Flusher = wt.Flusher
+		t.Hijacker = wt.Hijacker
+		t.StringWriter = wt.StringWriter
+	case responseWriterCloseNotifierFlusherHijackerStringWriter:
+		w = wt.ResponseWriter
+		t.CloseNotifier = wt.CloseNotifier
+		t.Flusher = wt.Flusher
+		t.Hijacker = wt.Hijacker
+		t.StringWriter = wt.StringWriter
+	case responseWriterPusherStringWriter:
+		w = wt.ResponseWriter
+		t.Pusher = wt.Pusher
+		t.StringWriter = wt.StringWriter
+	case responseWriterCloseNotifierPusherStringWriter:
+		w = wt.ResponseWriter
+		t.CloseNotifier = wt.CloseNotifier
+		t.Pusher = wt.Pusher
+		t.StringWriter = wt.StringWriter
+	case responseWriterFlusherPusherStringWriter:
+		w = wt.ResponseWriter
+		t.Flusher = wt.Flusher
+		t.Pusher = wt.Pusher
+		t.StringWriter = wt.StringWriter
+	case responseWriterCloseNotifierFlusherPusherStringWriter:
+		w = wt.ResponseWriter
+		t.CloseNotifier = wt.CloseNotifier
+		t.Flusher = wt.Flusher
+		t.Pusher = wt.Pusher
+		t.StringWriter = wt.StringWriter
+	case responseWriterHijackerPusherStringWriter:
+		w = wt.ResponseWriter
+		t.Hijacker = wt.Hijacker
+		t.Pusher = wt.Pusher
+		t.StringWriter = wt.StringWriter
+	case responseWriterCloseNotifierHijackerPusherStringWriter:
+		w = wt.ResponseWriter
+		t.CloseNotifier = wt.CloseNotifier
+		t.Hijacker = wt.Hijacker
+		t.Pusher = wt.Pusher
+		t.StringWriter = wt.StringWriter
+	case responseWriterFlusherHijackerPusherStringWriter:
+		w = wt.ResponseWriter
+		t.Flusher = wt.Flusher
+		t.Hijacker = wt.Hijacker
+		t.Pusher = wt.Pusher
+		t.StringWriter = wt.StringWriter
+	case responseWriterCloseNotifierFlusherHijackerPusherStringWriter:
+		w = wt.ResponseWriter
+		t.CloseNotifier = wt.CloseNotifier
+		t.Flusher = wt.Flusher
+		t.Hijacker = wt.Hijacker
+		t.Pusher = wt.Pusher
+		t.StringWriter = wt.StringWriter
+	default:
+		t.CloseNotifier, _ = w.(http.CloseNotifier)
+		t.Flusher, _ = w.(http.Flusher)
+		t.Hijacker, _ = w.(http.Hijacker)
+		t.Pusher, _ = w.(http.Pusher)
+		t.StringWriter, _ = w.(StringWriter)
+	}
+	if rw, ok := w.(responseWriter); ok {
+		t.responseWriter = rw
+	} else {
+		t.Writer = w
+		t.Headers = w
+		t.HeaderWriter = w
+	}
 	for _, o := range overrides {
 		o.Set(&t)
 	}
