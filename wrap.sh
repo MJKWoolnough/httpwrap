@@ -77,19 +77,40 @@ HEREDOC
 	}
 
 	echo;
-	echo "// Wrap wraps the given ResponseWriter and overrides the methods requested."
+	echo "// Wrap wraps the given ResponseWriter and overrides the methods requested.";
+	echo "// When using OverrideWriter make sure to use OverrideStringWriter, even if only";
+	echo "// with a nil value to disable it";
 	echo "func Wrap(w http.ResponseWriter, overrides ...Override) http.ResponseWriter {";
 	echo "	if len(overrides) == 0 {";
 	echo "		return w";
 	echo "	}";
 	echo "	var t types";
+	echo "	switch wt := w.(type) {";
+	for i in $(seq 1 $(echo $(( (1 << ${numTypes}) - 1)))); do
+		echo "	case $(bfToTypeName $i):";
+		echo "		w = wt.ResponseWriter";
+		for type in $(bfToTypes $i); do
+			tn="$(typeToName "$type")";
+			echo "		t.${tn} = wt.${tn}";
+		done;
+	done;
+	echo "	default:";
 	while read type;do
 		if [ "${type:0:1}" == "+" ]; then
-			echo "	t.$(typeToName "${type:1}") = w";
 			continue;
 		fi;
-		echo "	t.$(typeToName "$type"), _ = w.($type)";
+		echo "		t.$(typeToName "$type"), _ = w.($type)";
 	done < types.gen
+	echo "	}";
+	echo "	if rw, ok := w.(responseWriter); ok {";
+	echo "		t.responseWriter = rw";
+	echo "	} else {";
+	while read type;do
+		if [ "${type:0:1}" == "+" ]; then
+			echo "		t.$(typeToName "${type:1}") = w";
+		fi;
+	done < types.gen
+	echo "	}";
 	echo "	for _, o := range overrides {";
 	echo "		o.Set(&t)";
 	echo "	}";
