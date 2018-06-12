@@ -6,7 +6,7 @@
 
 // Package httpwrap wraps an http.ResponseWriter to override some method(s)
 // while maintaining other possible interface implementations
-package httpwrap
+package httpwrap // import "vimagination.zapto.org/httpwrap"
 
 import (
 	"io"
