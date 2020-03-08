@@ -1,6 +1,6 @@
 # httpwrap
 --
-    import "github.com/MJKWoolnough/httpwrap"
+    import "vimagination.zapto.org/httpwrap"
 
 Package httpwrap wraps an http.ResponseWriter to override some method(s) while
 maintaining other possible interface implementations
@@ -46,13 +46,6 @@ type Override interface {
 ```
 
 Override is an interface for overriding interfaces on a http.ResponseWriter
-
-#### func  OverrideCloseNotifier
-
-```go
-func OverrideCloseNotifier(t http.CloseNotifier) Override
-```
-OverrideCloseNotifier is used to set an override for http.CloseNotifier
 
 #### func  OverrideFlusher
 
