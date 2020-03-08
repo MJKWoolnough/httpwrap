@@ -59,19 +59,6 @@ func OverrideHeaderWriter(t HeaderWriter) Override {
 	return headerwriter{t}
 }
 
-type closenotifier struct {
-	http.CloseNotifier
-}
-
-func (i closenotifier) Set(t *types) {
-	t.CloseNotifier = i.CloseNotifier
-}
-
-// OverrideCloseNotifier is used to set an override for http.CloseNotifier
-func OverrideCloseNotifier(t http.CloseNotifier) Override {
-	return closenotifier{t}
-}
-
 type flusher struct {
 	http.Flusher
 }
