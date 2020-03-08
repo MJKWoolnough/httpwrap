@@ -10,7 +10,7 @@ type testResponseWriter struct {
 	http.ResponseWriter
 }
 
-type tresponseWriterCloseNotifierFlusherHijackerPusher responseWriterCloseNotifierFlusherHijackerPusher
+type tresponseWriterFlusherHijackerPusher responseWriterFlusherHijackerPusher
 
 func TestWrap(t *testing.T) {
 	for n, test := range [...]struct {
@@ -18,34 +18,27 @@ func TestWrap(t *testing.T) {
 		Overrides     []Override
 	}{
 		{
-			tresponseWriterCloseNotifierFlusherHijackerPusher{},
-			tresponseWriterCloseNotifierFlusherHijackerPusher{},
+			tresponseWriterFlusherHijackerPusher{},
+			tresponseWriterFlusherHijackerPusher{},
 			[]Override{},
 		},
 		{
-			tresponseWriterCloseNotifierFlusherHijackerPusher{},
-			responseWriterFlusherHijackerPusher{},
-			[]Override{
-				OverrideCloseNotifier(nil),
-			},
-		},
-		{
-			tresponseWriterCloseNotifierFlusherHijackerPusher{},
-			responseWriterCloseNotifierHijackerPusher{},
+			tresponseWriterFlusherHijackerPusher{},
+			responseWriterHijackerPusher{},
 			[]Override{
 				OverrideFlusher(nil),
 			},
 		},
 		{
-			tresponseWriterCloseNotifierFlusherHijackerPusher{},
-			responseWriterCloseNotifierFlusherPusher{},
+			tresponseWriterFlusherHijackerPusher{},
+			responseWriterFlusherPusher{},
 			[]Override{
 				OverrideHijacker(nil),
 			},
 		},
 		{
-			tresponseWriterCloseNotifierFlusherHijackerPusher{},
-			responseWriterCloseNotifierFlusherHijacker{},
+			tresponseWriterFlusherHijackerPusher{},
+			responseWriterFlusherHijacker{},
 			[]Override{
 				OverridePusher(nil),
 			},
@@ -57,30 +50,23 @@ func TestWrap(t *testing.T) {
 		},
 		{
 			testResponseWriter{},
-			responseWriterCloseNotifier{},
-			[]Override{
-				OverrideCloseNotifier(responseWriterCloseNotifierFlusherHijackerPusher{}),
-			},
-		},
-		{
-			testResponseWriter{},
 			responseWriterFlusher{},
 			[]Override{
-				OverrideFlusher(responseWriterCloseNotifierFlusherHijackerPusher{}),
+				OverrideFlusher(responseWriterFlusherHijackerPusher{}),
 			},
 		},
 		{
 			testResponseWriter{},
 			responseWriterHijacker{},
 			[]Override{
-				OverrideHijacker(responseWriterCloseNotifierFlusherHijackerPusher{}),
+				OverrideHijacker(responseWriterFlusherHijackerPusher{}),
 			},
 		},
 		{
 			testResponseWriter{},
 			responseWriterPusher{},
 			[]Override{
-				OverridePusher(responseWriterCloseNotifierFlusherHijackerPusher{}),
+				OverridePusher(responseWriterFlusherHijackerPusher{}),
 			},
 		},
 	} {
