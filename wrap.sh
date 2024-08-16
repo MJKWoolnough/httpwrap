@@ -2,10 +2,10 @@
 
 (
 	cat <<HEREDOC
-// File automatically generated with ./wrap.sh - DO NOT EDIT
+// File automatically generated with ./wrap.sh - DO NOT EDIT.
 
 // Package httpwrap wraps an http.ResponseWriter to override some method(s)
-// while maintaining other possible interface implementations
+// while maintaining other possible interface implementations.
 package httpwrap // import "vimagination.zapto.org/httpwrap"
 
 import (
@@ -13,12 +13,12 @@ import (
 	"net/http"
 )
 
-// Headers is an interface for the Header method of the ResponseWriter interface
+// Headers is an interface for the Header method of the ResponseWriter interface.
 type Headers interface {
 	Header() http.Header
 }
 
-// HeaderWriter is an interface for the WriteHeader method of the ResponseWriter
+// HeaderWriter is an interface for the WriteHeader method of the ResponseWriter.
 // interface
 type HeaderWriter interface {
 	WriteHeader(int)
@@ -79,7 +79,7 @@ HEREDOC
 	echo;
 	echo "// Wrap wraps the given ResponseWriter and overrides the methods requested.";
 	echo "// When using OverrideWriter make sure to use OverrideStringWriter, even if only";
-	echo "// with a nil value to disable it";
+	echo "// with a nil value to disable it.";
 	echo "func Wrap(w http.ResponseWriter, overrides ...Override) http.ResponseWriter {";
 	echo "	if len(overrides) == 0 {";
 	echo "		return w";
