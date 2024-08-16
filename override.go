@@ -1,4 +1,4 @@
-// File automatically generated with ./override.sh - DO NOT EDIT
+// File automatically generated with ./override.sh - DO NOT EDIT.
 
 package httpwrap
 
@@ -7,12 +7,12 @@ import (
 	"net/http"
 )
 
-// Override is an interface for overriding interfaces on a http.ResponseWriter
+// Override is an interface for overriding interfaces on a http.ResponseWriter.
 type Override interface {
 	Set(*types)
 }
 
-// StringWriter is an interface for writing strings
+// StringWriter is an interface for writing strings.
 type StringWriter interface {
 	WriteString(string) (int, error)
 }
@@ -26,7 +26,7 @@ func (i writer) Set(t *types) {
 	t.Writer = i.Writer
 }
 
-// OverrideWriter is used to set an override for io.Writer
+// OverrideWriter is used to set an override for io.Writer.
 func OverrideWriter(t io.Writer) Override {
 	return writer{t}
 }
@@ -40,7 +40,7 @@ func (i headers) Set(t *types) {
 	t.Headers = i.Headers
 }
 
-// OverrideHeaders is used to set an override for Headers
+// OverrideHeaders is used to set an override for Headers.
 func OverrideHeaders(t Headers) Override {
 	return headers{t}
 }
@@ -54,7 +54,7 @@ func (i headerwriter) Set(t *types) {
 	t.HeaderWriter = i.HeaderWriter
 }
 
-// OverrideHeaderWriter is used to set an override for HeaderWriter
+// OverrideHeaderWriter is used to set an override for HeaderWriter.
 func OverrideHeaderWriter(t HeaderWriter) Override {
 	return headerwriter{t}
 }
@@ -67,7 +67,7 @@ func (i flusher) Set(t *types) {
 	t.Flusher = i.Flusher
 }
 
-// OverrideFlusher is used to set an override for http.Flusher
+// OverrideFlusher is used to set an override for http.Flusher.
 func OverrideFlusher(t http.Flusher) Override {
 	return flusher{t}
 }
@@ -80,7 +80,7 @@ func (i hijacker) Set(t *types) {
 	t.Hijacker = i.Hijacker
 }
 
-// OverrideHijacker is used to set an override for http.Hijacker
+// OverrideHijacker is used to set an override for http.Hijacker.
 func OverrideHijacker(t http.Hijacker) Override {
 	return hijacker{t}
 }
@@ -93,7 +93,7 @@ func (i pusher) Set(t *types) {
 	t.Pusher = i.Pusher
 }
 
-// OverridePusher is used to set an override for http.Pusher
+// OverridePusher is used to set an override for http.Pusher.
 func OverridePusher(t http.Pusher) Override {
 	return pusher{t}
 }
@@ -106,7 +106,7 @@ func (i stringwriter) Set(t *types) {
 	t.StringWriter = i.StringWriter
 }
 
-// OverrideStringWriter is used to set an override for StringWriter
+// OverrideStringWriter is used to set an override for StringWriter.
 func OverrideStringWriter(t StringWriter) Override {
 	return stringwriter{t}
 }
