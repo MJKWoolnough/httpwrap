@@ -1,7 +1,7 @@
 #!/bin/bash
 
 (
-	echo "// File automatically generated with ./override.sh - DO NOT EDIT";
+	echo "// File automatically generated with ./override.sh - DO NOT EDIT.";
 	echo;
 	echo "package httpwrap";
 	echo;
@@ -10,12 +10,12 @@
 	echo "	\"net/http\"";
 	echo ")";
 	echo;
-	echo "// Override is an interface for overriding interfaces on a http.ResponseWriter";
+	echo "// Override is an interface for overriding interfaces on a http.ResponseWriter.";
 	echo "type Override interface {";
 	echo "	Set(*types)";
 	echo "}";
 	echo;
-	echo "// StringWriter is an interface for writing strings";
+	echo "// StringWriter is an interface for writing strings.";
 	echo "type StringWriter interface {";
 	echo "	WriteString(string) (int, error)";
 	echo "}";
@@ -42,7 +42,7 @@
 		echo "	t.$name = i.$name";
 		echo "}";
 		echo;
-		echo "// Override$name is used to set an override for $type";
+		echo "// Override$name is used to set an override for $type.";
 		echo "func Override$name(t $type) Override {";
 		echo "	return $typename{t}";
 		echo "}";
