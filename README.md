@@ -3,7 +3,7 @@
     import "vimagination.zapto.org/httpwrap"
 
 Package httpwrap wraps an http.ResponseWriter to override some method(s) while
-maintaining other possible interface implementations
+maintaining other possible interface implementations.
 
 ## Usage
 
@@ -14,7 +14,7 @@ func Wrap(w http.ResponseWriter, overrides ...Override) http.ResponseWriter
 ```
 Wrap wraps the given ResponseWriter and overrides the methods requested. When
 using OverrideWriter make sure to use OverrideStringWriter, even if only with a
-nil value to disable it
+nil value to disable it.
 
 #### type HeaderWriter
 
@@ -24,7 +24,7 @@ type HeaderWriter interface {
 }
 ```
 
-HeaderWriter is an interface for the WriteHeader method of the ResponseWriter
+HeaderWriter is an interface for the WriteHeader method of the ResponseWriter.
 interface
 
 #### type Headers
@@ -35,7 +35,7 @@ type Headers interface {
 }
 ```
 
-Headers is an interface for the Header method of the ResponseWriter interface
+Headers is an interface for the Header method of the ResponseWriter interface.
 
 #### type Override
 
@@ -45,56 +45,56 @@ type Override interface {
 }
 ```
 
-Override is an interface for overriding interfaces on a http.ResponseWriter
+Override is an interface for overriding interfaces on a http.ResponseWriter.
 
 #### func  OverrideFlusher
 
 ```go
 func OverrideFlusher(t http.Flusher) Override
 ```
-OverrideFlusher is used to set an override for http.Flusher
+OverrideFlusher is used to set an override for http.Flusher.
 
 #### func  OverrideHeaderWriter
 
 ```go
 func OverrideHeaderWriter(t HeaderWriter) Override
 ```
-OverrideHeaderWriter is used to set an override for HeaderWriter
+OverrideHeaderWriter is used to set an override for HeaderWriter.
 
 #### func  OverrideHeaders
 
 ```go
 func OverrideHeaders(t Headers) Override
 ```
-OverrideHeaders is used to set an override for Headers
+OverrideHeaders is used to set an override for Headers.
 
 #### func  OverrideHijacker
 
 ```go
 func OverrideHijacker(t http.Hijacker) Override
 ```
-OverrideHijacker is used to set an override for http.Hijacker
+OverrideHijacker is used to set an override for http.Hijacker.
 
 #### func  OverridePusher
 
 ```go
 func OverridePusher(t http.Pusher) Override
 ```
-OverridePusher is used to set an override for http.Pusher
+OverridePusher is used to set an override for http.Pusher.
 
 #### func  OverrideStringWriter
 
 ```go
 func OverrideStringWriter(t StringWriter) Override
 ```
-OverrideStringWriter is used to set an override for StringWriter
+OverrideStringWriter is used to set an override for StringWriter.
 
 #### func  OverrideWriter
 
 ```go
 func OverrideWriter(t io.Writer) Override
 ```
-OverrideWriter is used to set an override for io.Writer
+OverrideWriter is used to set an override for io.Writer.
 
 #### type StringWriter
 
@@ -104,4 +104,4 @@ type StringWriter interface {
 }
 ```
 
-StringWriter is an interface for writing strings
+StringWriter is an interface for writing strings.
