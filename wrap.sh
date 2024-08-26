@@ -18,8 +18,8 @@ type Headers interface {
 	Header() http.Header
 }
 
-// HeaderWriter is an interface for the WriteHeader method of the ResponseWriter.
-// interface
+// HeaderWriter is an interface for the WriteHeader method of the ResponseWriter
+// interface.
 type HeaderWriter interface {
 	WriteHeader(int)
 }
@@ -84,7 +84,9 @@ HEREDOC
 	echo "	if len(overrides) == 0 {";
 	echo "		return w";
 	echo "	}";
+	echo;
 	echo "	var t types";
+	echo;
 	echo "	switch wt := w.(type) {";
 	for i in $(seq 1 $(echo $(( (1 << ${numTypes}) - 1)))); do
 		echo "	case $(bfToTypeName $i):";
@@ -102,6 +104,7 @@ HEREDOC
 		echo "		t.$(typeToName "$type"), _ = w.($type)";
 	done < types.gen
 	echo "	}";
+	echo;
 	echo "	if rw, ok := w.(responseWriter); ok {";
 	echo "		t.responseWriter = rw";
 	echo "	} else {";
@@ -111,20 +114,25 @@ HEREDOC
 		fi;
 	done < types.gen
 	echo "	}";
+	echo;
 	echo "	for _, o := range overrides {";
 	echo "		o.Set(&t)";
 	echo "	}";
+	echo;
 	echo "	var bf uint64";
+	echo;
 	i=1;
 	for type in ${types[@]};do 
 		echo "	if t.$(typeToName "$type") != nil {";
 		echo "		bf |= $i";
 		echo "	}";
+		echo;
 		let "i += i";
 	done;
 	echo "	if t.responseWriterOverride || bf == 0 {";
 	echo "		w = t.responseWriter";
 	echo "	}";
+	echo;
 	echo "	switch bf {";
 	for i in $(seq 1 $(echo $(( (1 << ${numTypes}) - 1)))); do
 		echo "	case $i:";
@@ -136,6 +144,7 @@ HEREDOC
 		echo "		}";
 	done;
 	echo "	}";
+	echo;
 	echo "	return w";
 	echo "}";
 	for i in $(seq 1 $(echo $(( (1 << ${numTypes}) - 1)))); do
