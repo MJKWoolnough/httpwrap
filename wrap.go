@@ -14,8 +14,8 @@ type Headers interface {
 	Header() http.Header
 }
 
-// HeaderWriter is an interface for the WriteHeader method of the ResponseWriter.
-// interface
+// HeaderWriter is an interface for the WriteHeader method of the ResponseWriter
+// interface.
 type HeaderWriter interface {
 	WriteHeader(int)
 }
@@ -42,7 +42,9 @@ func Wrap(w http.ResponseWriter, overrides ...Override) http.ResponseWriter {
 	if len(overrides) == 0 {
 		return w
 	}
+
 	var t types
+
 	switch wt := w.(type) {
 	case responseWriterFlusher:
 		w = wt.ResponseWriter
@@ -112,6 +114,7 @@ func Wrap(w http.ResponseWriter, overrides ...Override) http.ResponseWriter {
 		t.Pusher, _ = w.(http.Pusher)
 		t.StringWriter, _ = w.(StringWriter)
 	}
+
 	if rw, ok := w.(responseWriter); ok {
 		t.responseWriter = rw
 	} else {
@@ -119,25 +122,33 @@ func Wrap(w http.ResponseWriter, overrides ...Override) http.ResponseWriter {
 		t.Headers = w
 		t.HeaderWriter = w
 	}
+
 	for _, o := range overrides {
 		o.Set(&t)
 	}
+
 	var bf uint64
+
 	if t.Flusher != nil {
 		bf |= 1
 	}
+
 	if t.Hijacker != nil {
 		bf |= 2
 	}
+
 	if t.Pusher != nil {
 		bf |= 4
 	}
+
 	if t.StringWriter != nil {
 		bf |= 8
 	}
+
 	if t.responseWriterOverride || bf == 0 {
 		w = t.responseWriter
 	}
+
 	switch bf {
 	case 1:
 		return responseWriterFlusher{
@@ -232,6 +243,7 @@ func Wrap(w http.ResponseWriter, overrides ...Override) http.ResponseWriter {
 			t.StringWriter,
 		}
 	}
+
 	return w
 }
 
