@@ -24,8 +24,8 @@ type HeaderWriter interface {
 }
 ```
 
-HeaderWriter is an interface for the WriteHeader method of the ResponseWriter.
-interface
+HeaderWriter is an interface for the WriteHeader method of the ResponseWriter
+interface.
 
 #### type Headers
 
