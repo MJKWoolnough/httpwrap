@@ -47,4 +47,4 @@
 		echo "	return $typename{t}";
 		echo "}";
 	done < types.gen;
-) > override.go
+) > override.go;
