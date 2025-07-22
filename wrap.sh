@@ -37,38 +37,38 @@ HEREDOC
 
 	types=();
 	numTypes=0;
-	while read type;do 
+	while read type; do
 		if [ "${type:0:1}" == "+" ]; then
 			continue;
 		fi;
 		echo "	$type";
-		types+=($type);
+		types+=( $type );
 		let "numTypes++";
-	done < types.gen
+	done < types.gen;
 	echo "}";
 
-	function bfToTypes {
-		toRet=()
-		str="$(dc <<<"2o$1p" | rev)";
+	function bfToTypes() {
+		toRet=();
+		str="$(dc <<< "2o$1p" | rev)";
 		num=0;
 		while [ ! -z "$str" ]; do
 			if [ "${str:0:1}" == "1" ]; then
-				toRet+=(${types[$num]});
+				toRet+=( ${types[$num]} );
 			fi;
 			str="${str:1}";
-			let "num++";	
+			let "num++";
 		done;
 		echo "${toRet[@]}";
 	}
 
-	function bfToTypeName {
+	function bfToTypeName() {
 		echo -n "responseWriter";
-		for type in $(bfToTypes $1);do
+		for type in $(bfToTypes $1); do
 			echo -n "$(typeToName "$type")";
 		done;
 	}
 
-	function typeToName {
+	function typeToName() {
 		if [ -z "$(echo "$1" | grep ".")" ]; then
 			echo "$1";
 		else
@@ -88,7 +88,7 @@ HEREDOC
 	echo "	var t types";
 	echo;
 	echo "	switch wt := w.(type) {";
-	for i in $(seq 1 $(echo $(( (1 << ${numTypes}) - 1)))); do
+	for i in $(seq 1 $(echo $(( ( 1 < < ${numTypes} ) - 1 )))); do
 		echo "	case $(bfToTypeName $i):";
 		echo "		w = wt.ResponseWriter";
 		for type in $(bfToTypes $i); do
@@ -97,22 +97,22 @@ HEREDOC
 		done;
 	done;
 	echo "	default:";
-	while read type;do
+	while read type; do
 		if [ "${type:0:1}" == "+" ]; then
 			continue;
 		fi;
 		echo "		t.$(typeToName "$type"), _ = w.($type)";
-	done < types.gen
+	done < types.gen;
 	echo "	}";
 	echo;
 	echo "	if rw, ok := w.(responseWriter); ok {";
 	echo "		t.responseWriter = rw";
 	echo "	} else {";
-	while read type;do
+	while read type; do
 		if [ "${type:0:1}" == "+" ]; then
 			echo "		t.$(typeToName "${type:1}") = w";
 		fi;
-	done < types.gen
+	done < types.gen;
 	echo "	}";
 	echo;
 	echo "	for _, o := range overrides {";
@@ -122,7 +122,7 @@ HEREDOC
 	echo "	var bf uint64";
 	echo;
 	i=1;
-	for type in ${types[@]};do 
+	for type in ${types[@]}; do
 		echo "	if t.$(typeToName "$type") != nil {";
 		echo "		bf |= $i";
 		echo "	}";
@@ -134,7 +134,7 @@ HEREDOC
 	echo "	}";
 	echo;
 	echo "	switch bf {";
-	for i in $(seq 1 $(echo $(( (1 << ${numTypes}) - 1)))); do
+	for i in $(seq 1 $(echo $(( ( 1 < < ${numTypes} ) - 1 )))); do
 		echo "	case $i:";
 		echo "		return $(bfToTypeName $i){";
 		echo "			w,";
@@ -147,7 +147,7 @@ HEREDOC
 	echo;
 	echo "	return w";
 	echo "}";
-	for i in $(seq 1 $(echo $(( (1 << ${numTypes}) - 1)))); do
+	for i in $(seq 1 $(echo $(( ( 1 < < ${numTypes} ) - 1 )))); do
 		echo;
 		echo "type $(bfToTypeName $i) struct {";
 		echo "	http.ResponseWriter";
@@ -156,5 +156,4 @@ HEREDOC
 		done;
 		echo "}";
 	done;
-
-) > wrap.go
+) > wrap.go;
