@@ -37,42 +37,52 @@ HEREDOC
 
 	types=();
 	numTypes=0;
+
 	while read type; do
 		if [ "${type:0:1}" == "+" ]; then
 			continue;
 		fi;
+
 		echo "	$type";
+
 		types+=( $type );
+
 		let "numTypes++";
 	done < types.gen;
+
 	echo "}";
 
-	function bfToTypes() {
+	bfToTypes() {
 		toRet=();
 		str="$(dc <<< "2o$1p" | rev)";
 		num=0;
+
 		while [ ! -z "$str" ]; do
 			if [ "${str:0:1}" == "1" ]; then
 				toRet+=( ${types[$num]} );
 			fi;
+
 			str="${str:1}";
+
 			let "num++";
 		done;
+
 		echo "${toRet[@]}";
 	}
 
-	function bfToTypeName() {
+	bfToTypeName() {
 		echo -n "responseWriter";
+
 		for type in $(bfToTypes $1); do
 			echo -n "$(typeToName "$type")";
 		done;
 	}
 
-	function typeToName() {
+	typeToName() {
 		if [ -z "$(echo "$1" | grep ".")" ]; then
 			echo "$1";
 		else
-			echo "$1" | cut -d'.' -f2;
+			cut -d'.' -f2 <<< "$1";
 		fi;
 	}
 
@@ -88,31 +98,40 @@ HEREDOC
 	echo "	var t types";
 	echo;
 	echo "	switch wt := w.(type) {";
-	for i in $(seq 1 $(echo $(( ( 1 < < ${numTypes} ) - 1 )))); do
+
+	for i in $(seq 1 $(echo $(( ( 1 << ${numTypes} ) - 1 )))); do
 		echo "	case $(bfToTypeName $i):";
 		echo "		w = wt.ResponseWriter";
+
 		for type in $(bfToTypes $i); do
 			tn="$(typeToName "$type")";
+
 			echo "		t.${tn} = wt.${tn}";
 		done;
 	done;
+
 	echo "	default:";
+
 	while read type; do
 		if [ "${type:0:1}" == "+" ]; then
 			continue;
 		fi;
+
 		echo "		t.$(typeToName "$type"), _ = w.($type)";
 	done < types.gen;
+
 	echo "	}";
 	echo;
 	echo "	if rw, ok := w.(responseWriter); ok {";
 	echo "		t.responseWriter = rw";
 	echo "	} else {";
+
 	while read type; do
 		if [ "${type:0:1}" == "+" ]; then
 			echo "		t.$(typeToName "${type:1}") = w";
 		fi;
 	done < types.gen;
+
 	echo "	}";
 	echo;
 	echo "	for _, o := range overrides {";
@@ -121,39 +140,50 @@ HEREDOC
 	echo;
 	echo "	var bf uint64";
 	echo;
+
 	i=1;
+
 	for type in ${types[@]}; do
 		echo "	if t.$(typeToName "$type") != nil {";
 		echo "		bf |= $i";
 		echo "	}";
 		echo;
+
 		let "i += i";
 	done;
+
 	echo "	if t.responseWriterOverride || bf == 0 {";
 	echo "		w = t.responseWriter";
 	echo "	}";
 	echo;
 	echo "	switch bf {";
-	for i in $(seq 1 $(echo $(( ( 1 < < ${numTypes} ) - 1 )))); do
+
+	for i in $(seq 1 $(echo $(( ( 1 << ${numTypes} ) - 1 )))); do
 		echo "	case $i:";
 		echo "		return $(bfToTypeName $i){";
 		echo "			w,";
+
 		for type in $(bfToTypes $i); do
 			echo "			t.$(typeToName "$type"),";
 		done;
+
 		echo "		}";
 	done;
+
 	echo "	}";
 	echo;
 	echo "	return w";
 	echo "}";
-	for i in $(seq 1 $(echo $(( ( 1 < < ${numTypes} ) - 1 )))); do
+
+	for i in $(seq 1 $(echo $(( ( 1 << ${numTypes} ) - 1 )))); do
 		echo;
 		echo "type $(bfToTypeName $i) struct {";
 		echo "	http.ResponseWriter";
+
 		for type in $(bfToTypes $i); do
 			echo "	$type";
 		done;
+
 		echo "}";
 	done;
 ) > wrap.go;
