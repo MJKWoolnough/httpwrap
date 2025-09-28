@@ -12,11 +12,6 @@ type Override interface {
 	Set(*types)
 }
 
-// StringWriter is an interface for writing strings.
-type StringWriter interface {
-	WriteString(string) (int, error)
-}
-
 type writer struct {
 	io.Writer
 }
@@ -99,14 +94,14 @@ func OverridePusher(t http.Pusher) Override {
 }
 
 type stringwriter struct {
-	StringWriter
+	io.StringWriter
 }
 
 func (i stringwriter) Set(t *types) {
 	t.StringWriter = i.StringWriter
 }
 
-// OverrideStringWriter is used to set an override for StringWriter.
-func OverrideStringWriter(t StringWriter) Override {
+// OverrideStringWriter is used to set an override for io.StringWriter.
+func OverrideStringWriter(t io.StringWriter) Override {
 	return stringwriter{t}
 }
