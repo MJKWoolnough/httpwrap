@@ -32,17 +32,9 @@ type types struct {
 	http.Flusher
 	http.Hijacker
 	http.Pusher
-	StringWriter
+	io.StringWriter
 }
-
-// Wrap wraps the given ResponseWriter and overrides the methods requested.
-// When using OverrideWriter make sure to use OverrideStringWriter, even if only
-// with a nil value to disable it.
-func Wrap(w http.ResponseWriter, overrides ...Override) http.ResponseWriter {
-	if len(overrides) == 0 {
-		return w
-	}
-
+func createTypes(w http.ResponseWriter) (http.ResponseWriter, types) {
 	var t types
 
 	switch wt := w.(type) {
@@ -112,21 +104,13 @@ func Wrap(w http.ResponseWriter, overrides ...Override) http.ResponseWriter {
 		t.Flusher, _ = w.(http.Flusher)
 		t.Hijacker, _ = w.(http.Hijacker)
 		t.Pusher, _ = w.(http.Pusher)
-		t.StringWriter, _ = w.(StringWriter)
+		t.StringWriter, _ = w.(io.StringWriter)
 	}
 
-	if rw, ok := w.(responseWriter); ok {
-		t.responseWriter = rw
-	} else {
-		t.Writer = w
-		t.Headers = w
-		t.HeaderWriter = w
-	}
+	return w, t
+}
 
-	for _, o := range overrides {
-		o.Set(&t)
-	}
-
+func createBitMask(t types) uint64 {
 	var bf uint64
 
 	if t.Flusher != nil {
@@ -145,10 +129,10 @@ func Wrap(w http.ResponseWriter, overrides ...Override) http.ResponseWriter {
 		bf |= 8
 	}
 
-	if t.responseWriterOverride || bf == 0 {
-		w = t.responseWriter
-	}
+	return bf
+}
 
+func createWrapper(w http.ResponseWriter, t types, bf uint64) http.ResponseWriter {
 	switch bf {
 	case 1:
 		return responseWriterFlusher{
@@ -247,6 +231,37 @@ func Wrap(w http.ResponseWriter, overrides ...Override) http.ResponseWriter {
 	return w
 }
 
+// Wrap wraps the given ResponseWriter and overrides the methods requested.
+// When using OverrideWriter make sure to use OverrideStringWriter, even if only
+// with a nil value to disable it.
+func Wrap(w http.ResponseWriter, overrides ...Override) http.ResponseWriter {
+	if len(overrides) == 0 {
+		return w
+	}
+
+	w, t := createTypes(w)
+
+	if rw, ok := w.(responseWriter); ok {
+		t.responseWriter = rw
+	} else {
+		t.Writer = w
+		t.Headers = w
+		t.HeaderWriter = w
+	}
+
+	for _, o := range overrides {
+		o.Set(&t)
+	}
+
+	bf := createBitMask(t)
+
+	if t.responseWriterOverride || bf == 0 {
+		w = t.responseWriter
+	}
+
+	return createWrapper(w, t, bf)
+}
+
 type responseWriterFlusher struct {
 	http.ResponseWriter
 	http.Flusher
@@ -289,46 +304,46 @@ type responseWriterFlusherHijackerPusher struct {
 
 type responseWriterStringWriter struct {
 	http.ResponseWriter
-	StringWriter
+	io.StringWriter
 }
 
 type responseWriterFlusherStringWriter struct {
 	http.ResponseWriter
 	http.Flusher
-	StringWriter
+	io.StringWriter
 }
 
 type responseWriterHijackerStringWriter struct {
 	http.ResponseWriter
 	http.Hijacker
-	StringWriter
+	io.StringWriter
 }
 
 type responseWriterFlusherHijackerStringWriter struct {
 	http.ResponseWriter
 	http.Flusher
 	http.Hijacker
-	StringWriter
+	io.StringWriter
 }
 
 type responseWriterPusherStringWriter struct {
 	http.ResponseWriter
 	http.Pusher
-	StringWriter
+	io.StringWriter
 }
 
 type responseWriterFlusherPusherStringWriter struct {
 	http.ResponseWriter
 	http.Flusher
 	http.Pusher
-	StringWriter
+	io.StringWriter
 }
 
 type responseWriterHijackerPusherStringWriter struct {
 	http.ResponseWriter
 	http.Hijacker
 	http.Pusher
-	StringWriter
+	io.StringWriter
 }
 
 type responseWriterFlusherHijackerPusherStringWriter struct {
@@ -336,5 +351,5 @@ type responseWriterFlusherHijackerPusherStringWriter struct {
 	http.Flusher
 	http.Hijacker
 	http.Pusher
-	StringWriter
+	io.StringWriter
 }
