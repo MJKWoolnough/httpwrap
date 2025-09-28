@@ -86,6 +86,7 @@ HEREDOC
 		fi;
 	}
 
+	echo;
 	echo "func createTypes(w http.ResponseWriter) (http.ResponseWriter, types) {";
 	echo "	var t types";
 	echo;

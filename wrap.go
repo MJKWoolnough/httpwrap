@@ -34,6 +34,7 @@ type types struct {
 	http.Pusher
 	io.StringWriter
 }
+
 func createTypes(w http.ResponseWriter) (http.ResponseWriter, types) {
 	var t types
 
