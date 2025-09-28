@@ -86,15 +86,7 @@ HEREDOC
 		fi;
 	}
 
-	echo;
-	echo "// Wrap wraps the given ResponseWriter and overrides the methods requested.";
-	echo "// When using OverrideWriter make sure to use OverrideStringWriter, even if only";
-	echo "// with a nil value to disable it.";
-	echo "func Wrap(w http.ResponseWriter, overrides ...Override) http.ResponseWriter {";
-	echo "	if len(overrides) == 0 {";
-	echo "		return w";
-	echo "	}";
-	echo;
+	echo "func createTypes(w http.ResponseWriter) (http.ResponseWriter, types) {";
 	echo "	var t types";
 	echo;
 	echo "	switch wt := w.(type) {";
@@ -122,22 +114,10 @@ HEREDOC
 
 	echo "	}";
 	echo;
-	echo "	if rw, ok := w.(responseWriter); ok {";
-	echo "		t.responseWriter = rw";
-	echo "	} else {";
-
-	while read type; do
-		if [ "${type:0:1}" == "+" ]; then
-			echo "		t.$(typeToName "${type:1}") = w";
-		fi;
-	done < types.gen;
-
-	echo "	}";
+	echo "	return w, t";
+	echo "}";
 	echo;
-	echo "	for _, o := range overrides {";
-	echo "		o.Set(&t)";
-	echo "	}";
-	echo;
+	echo "func createBitMask(t types) uint64 {";
 	echo "	var bf uint64";
 	echo;
 
@@ -151,11 +131,10 @@ HEREDOC
 
 		let "i += i";
 	done;
-
-	echo "	if t.responseWriterOverride || bf == 0 {";
-	echo "		w = t.responseWriter";
-	echo "	}";
+	echo "	return bf";
+	echo "}";
 	echo;
+	echo "func createWrapper(w http.ResponseWriter, t types, bf uint64) http.ResponseWriter {";
 	echo "	switch bf {";
 
 	for i in $(seq 1 $(echo $(( ( 1 << ${numTypes} ) - 1 )))); do
@@ -173,6 +152,41 @@ HEREDOC
 	echo "	}";
 	echo;
 	echo "	return w";
+	echo "}";
+	echo;
+	echo "// Wrap wraps the given ResponseWriter and overrides the methods requested.";
+	echo "// When using OverrideWriter make sure to use OverrideStringWriter, even if only";
+	echo "// with a nil value to disable it.";
+	echo "func Wrap(w http.ResponseWriter, overrides ...Override) http.ResponseWriter {";
+	echo "	if len(overrides) == 0 {";
+	echo "		return w";
+	echo "	}";
+	echo;
+	echo "	w, t := createTypes(w)";
+	echo;
+	echo "	if rw, ok := w.(responseWriter); ok {";
+	echo "		t.responseWriter = rw";
+	echo "	} else {";
+
+	while read type; do
+		if [ "${type:0:1}" == "+" ]; then
+			echo "		t.$(typeToName "${type:1}") = w";
+		fi;
+	done < types.gen;
+
+	echo "	}";
+	echo;
+	echo "	for _, o := range overrides {";
+	echo "		o.Set(&t)";
+	echo "	}";
+	echo;
+	echo "	bf := createBitMask(t)";
+	echo;
+	echo "	if t.responseWriterOverride || bf == 0 {";
+	echo "		w = t.responseWriter";
+	echo "	}";
+	echo;
+	echo "	return createWrapper(w, t, bf)";
 	echo "}";
 
 	for i in $(seq 1 $(echo $(( ( 1 << ${numTypes} ) - 1 )))); do
